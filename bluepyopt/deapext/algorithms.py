@@ -29,8 +29,8 @@ import deap.algorithms
 import deap.tools
 import pickle
 
-from . import MaxNGen, Stagnation
 from .utils import _update_history_and_hof, _record_stats
+from .stoppingCriteria import MaxNGen
 
 logger = logging.getLogger('__main__')
 
@@ -53,6 +53,17 @@ def _get_offspring(parents, toolbox, cxpb, mutpb):
     if hasattr(toolbox, 'variate'):
         return toolbox.variate(parents, toolbox, cxpb, mutpb)
     return deap.algorithms.varAnd(parents, toolbox, cxpb, mutpb)
+
+
+def _check_stopping_criteria(criteria, params):
+    for c in criteria:
+        c.check(params)
+        if c.criteria_met:
+            logger.info('Run stopped because of stopping criteria: ' +
+                        c.name)
+            return True
+    else:
+        return False
 
 
 def eaAlphaMuPlusLambdaCheckpoint(
@@ -108,12 +119,12 @@ def eaAlphaMuPlusLambdaCheckpoint(
         
     stopping_conditions = [MaxNGen(ngen)]
 
-    # Begin the generational process
-    tot_nevals = 0
-    active = True
-    gen = start_gen + 1
-    while active:
+    stopping_criteria = [MaxNGen(ngen)]
 
+    # Begin the generational process
+    gen = start_gen + 1
+    stopping_params = {"gen": gen}
+    while not(_check_stopping_criteria(stopping_criteria, stopping_params)):
         offspring = _get_offspring(parents, toolbox, cxpb, mutpb)
 
         population = parents + offspring
@@ -149,5 +160,8 @@ def eaAlphaMuPlusLambdaCheckpoint(
                 active = False
                 break
         gen += 1
+
+        gen += 1
+        stopping_params["gen"] = gen
 
     return population, halloffame, logbook, history

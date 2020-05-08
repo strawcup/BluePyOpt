@@ -28,10 +28,13 @@ del get_versions
 from . import tools  # NOQA
 
 from .api import *  # NOQA
+
 import bluepyopt.optimisations
 import bluepyopt.deapext.DEAPoptimisations
 import bluepyopt.deapext.CMADEAPoptimisations
 import bluepyopt.deapext.IBEADEAPoptimisations
+
+import bluepyopt.stoppingCriteria
 
 # Add some backward compatibility for the time when DEAPoptimisation not in
 # deapext yet

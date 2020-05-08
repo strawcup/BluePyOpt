@@ -73,7 +73,7 @@ class SequenceProtocol(Protocol):
 
         for protocol in self.protocols:
             
-            # To be retrocompatible
+            # Try/except added for backward compatibility
             try:
                 response = protocol.run(
                     cell_model=cell_model,
