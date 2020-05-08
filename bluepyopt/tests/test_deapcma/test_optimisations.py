@@ -11,10 +11,10 @@ import deap.tools
 
 @attr('unit')
 def test_DEAPOptimisationCMA_normspace():
-    "deapext.optimisation: Testing DEAPOptimisationCMA normspace"
+    "deapext.optimisation: Testing CMADEAPOptimisation normspace"
 
     evaluator = examples.simplecell.cell_evaluator
-    optimisation = bluepyopt.optimisations.DEAPOptimisationCMA(
+    optimisation = bluepyopt.deapext.CMADEAPoptimisations.CMADEAPOptimisation(
         evaluator=evaluator)
 
     x = [n*0.1 for n in range(len(evaluator.params))]
@@ -25,16 +25,15 @@ def test_DEAPOptimisationCMA_normspace():
 
 @attr('unit')
 def test_DEAPOptimisationCMA_run():
-    "deapext.optimisation: Testing DEAPOptimisationCMA run from centroid"
+    "deapext.optimisation: Testing CMADEAPOptimisation run from centroid"
 
     evaluator = examples.simplecell.cell_evaluator
     x = [n * 0.1 for n in range(len(evaluator.params))]
 
     try:
-        optimisation = bluepyopt.optimisations.DEAPOptimisationCMA(
+        optimisation = bluepyopt.deapext.CMADEAPoptimisations.CMADEAPOptimisation(
             evaluator=evaluator,
-            swarm_size=1,
-            centroid=[x])
+            centroids=[x])
 
         pop, hof, log, hist = optimisation.run(max_ngen=1)
         raised = False

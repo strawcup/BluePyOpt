@@ -65,7 +65,6 @@ def _check_stopping_criteria(criteria, params):
     else:
         return False
 
-
 def eaAlphaMuPlusLambdaCheckpoint(
         population,
         toolbox,
@@ -79,7 +78,6 @@ def eaAlphaMuPlusLambdaCheckpoint(
         cp_filename=None,
         continue_cp=False):
     r"""This is the :math:`(~\alpha,\mu~,~\lambda)` evolutionary algorithm
-
     Args:
         population(list of deap Individuals)
         toolbox(deap Toolbox)
@@ -116,8 +114,6 @@ def eaAlphaMuPlusLambdaCheckpoint(
         invalid_count = _evaluate_invalid_fitness(toolbox, population)
         _update_history_and_hof(halloffame, history, population)
         _record_stats(stats, logbook, start_gen, population, invalid_count)
-        
-    stopping_conditions = [MaxNGen(ngen)]
 
     stopping_criteria = [MaxNGen(ngen)]
 
@@ -132,11 +128,10 @@ def eaAlphaMuPlusLambdaCheckpoint(
         invalid_count = _evaluate_invalid_fitness(toolbox, offspring)
         _update_history_and_hof(halloffame, history, population)
         _record_stats(stats, logbook, gen, population, invalid_count)
-        tot_nevals += invalid_count
-        
+
         # Select the next generation parents
         parents = toolbox.select(population, mu)
-        
+
         logger.info(logbook.stream)
 
         if(cp_filename and cp_frequency and
@@ -150,16 +145,6 @@ def eaAlphaMuPlusLambdaCheckpoint(
                       rndstate=random.getstate())
             pickle.dump(cp, open(cp_filename, "wb"))
             logger.debug('Wrote checkpoint to %s', cp_filename)
-        
-        stopping_params = {"ngen": gen-1}
-        [c.check(stopping_params) for c in stopping_conditions]
-        for c in stopping_conditions:
-            if c.criteria_met:
-                logger.info('IBEA stopped because of termination criteria: ' +
-                            ' '.join(type(c).__name__))
-                active = False
-                break
-        gen += 1
 
         gen += 1
         stopping_params["gen"] = gen
